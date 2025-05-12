@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Liste des Salles{% endblock %}
+
+{% block content %}
+<script>
+function deleteRoom(roomId) {
+    if (!confirm("Voulez-vous vraiment supprimer cette salle ?")) return;
+
+    fetch(`/rooms/${roomId}`, {
+        method: "DELETE"
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        location.reload(); // Actualise la page après suppression
+    })
+    .catch(error => console.error("Erreur :", error));
+}
+</script>
+<h1>Liste des Salles</h1>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Capacité</th>
+        <th>Actions</th>
+    </tr>
+    {% for room in rooms %}
+    <tr>
+        <td>{{ room.id }}</td>
+        <td>{{ room.name }}</td>
+        <td>{{ room.capacity }}</td>
+        <td>
+            <a href="{{ url_for('room.get_room', room_id=room.id) }}">Détails</a>
+           <button onclick="deleteRoom({{ room.id }})">Supprimer</button>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Ajouter une Salle</h2>
+<form method="POST" action="{{ url_for('room.create_room') }}">
+    <input type="text" name="name" placeholder="Nom de la salle" required>
+    <input type="number" name="capacity" placeholder="Capacité" required>
+    <button type="submit">Ajouter la salle</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1>Dashboard - Performance des Salles</h1>
+
+<!-- Total des réservations -->
+<div>
+    <h2>Total des réservations</h2>
+    <p>{{ total_reservations }} réservations effectuées</p>
+</div>
+
+<!-- Réservations par salle -->
+<div>
+    <h2>Réservations par salle</h2>
+    <ul>
+        {% for room, count in reservations_per_room %}
+            <li>{{ room }} : {{ count }} réservation(s)</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Réservations récentes -->
+<div>
+    <h2>Réservations récentes</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Salle</th>
+            <th>Utilisateur</th>
+            <th>Début</th>
+            <th>Fin</th>
+        </tr>
+        {% for reservation in recent_reservations %}
+            <tr>
+                <td>{{ reservation.id }}</td>
+                <td>{{ reservation.room_id }}</td>
+                <td>{{ reservation.user_id }}</td>
+                <td>{{ reservation.start_time }}</td>
+                <td>{{ reservation.end_time }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- Taux d'occupation des salles -->
+<div>
+    <h2>Taux d'occupation des salles</h2>
+    <ul>
+        {% for room, rate in occupancy_rate.items() %}
+            <li>{{ room }} : {{ rate * 100 }}% occupée</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Utilisation par utilisateur -->
+<div>
+    <h2>Utilisation par utilisateur</h2>
+    <ul>
+        {% for user, count in user_usage %}
+            <li>{{ user }} : {{ count }} réservation(s)</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Comparaison capacité vs réservations -->
+<div>
+    <h2>Comparaison de la capacité vs réservations</h2>
+    <table>
+        <tr>
+            <th>Salle</th>
+            <th>Capacité</th>
+            <th>Réservations</th>
+            <th>Taux d'occupation</th>
+        </tr>
+        {% for room, data in room_capacity_comparison.items() %}
+            <tr>
+                <td>{{ room }}</td>
+                <td>{{ data.capacity }}</td>
+                <td>{{ data.reservations }}</td>
+                <td>{{ data.utilization_rate }}%</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

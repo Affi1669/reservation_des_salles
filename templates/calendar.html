@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Calendrier des Réservations{% endblock %}
+
+{% block content %}
+<h1>Calendrier des Réservations</h1>
+<div id="calendar"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'fr',
+            events: '/api/reservations', // Charge les réservations depuis Flask
+            eventClick: function(info) {
+                alert("Réservation de la salle ID: " + info.event.extendedProps.room_id +
+                      "\nDébut: " + info.event.start +
+                      "\nFin: " + info.event.end);
+            }
+        });
+        calendar.render();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestion des Utilisateurs{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Gestion des Utilisateurs</h2>
+
+    <!-- Formulaire d'ajout d'utilisateur -->
+    <form id="addUserForm">
+        <input type="text" id="username" placeholder="Nom d'utilisateur" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Mot de passe" required>
+        <select id="role">
+            <option value="user">Utilisateur</option>
+            <option value="admin">Administrateur</option>
+        </select>
+        <button type="submit">Ajouter</button>
+    </form>
+
+    <h3>Liste des Utilisateurs</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Rôle</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            <!-- Les utilisateurs seront affichés ici -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+// Charger les utilisateurs
+function loadUsers() {
+    fetch('/api/users')
+    .then(response => response.json())
+    .then(data => {
+        let tableBody = document.getElementById('userTableBody');
+        tableBody.innerHTML = "";
+        data.forEach(user => {
+            let row = `<tr>
+                <td>${user.id}</td>
+                <td>${user.username}</td>
+                <td>${user.email}</td>
+                <td>${user.role}</td>
+                <td>
+                    <button onclick="deleteUser(${user.id})">Supprimer</button>
+                </td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    });
+}
+
+// Ajouter un utilisateur
+document.getElementById("addUserForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    let userData = {
+        username: document.getElementById("username").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value,
+        role: document.getElementById("role").value
+    };
+
+    fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+    }).then(response => response.json())
+    .then(() => {
+        loadUsers();
+        document.getElementById("addUserForm").reset();
+    });
+});
+
+// Supprimer un utilisateur
+function deleteUser(userId) {
+    fetch(`/api/users/${userId}`, { method: 'DELETE' })
+    .then(response => response.json())
+    .then(() => loadUsers());
+}
+
+// Charger les utilisateurs au démarrage
+loadUsers();
+</script>
+{% endblock %}

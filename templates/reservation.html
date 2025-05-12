@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Réservations{% endblock %}
+
+{% block content %}
+<h1>Liste des Réservations</h1>
+
+<!-- Vérifier si l'utilisateur est authentifié -->
+{% if current_user.is_authenticated %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Salle</th>
+            <th>Utilisateur</th>
+            <th>Début</th>
+            <th>Fin</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for res in reservations %}
+            <!-- Afficher uniquement les réservations de l'utilisateur connecté -->
+            {% if res.user_id == current_user.id %}
+            <tr>
+                <td>{{ res.id }}</td>
+                <td>{{ res.room_id }}</td>
+                <td>{{ res.user_id }}</td>
+                <td>{{ res.start_time }}</td>
+                <td>{{ res.end_time }}</td>
+                <td>
+                    <form action="{{ url_for('reservation.delete_reservation', reservation_id=res.id) }}" method="POST" style="display:inline;">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')">Annuler</button>
+                    </form>
+                </td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Vous devez être connecté pour voir et annuler vos réservations.</p>
+{% endif %}
+
+<h2>Créer une Réservation</h2>
+<form action="{{ url_for('reservation.create_reservation') }}" method="POST">
+    <!-- Ajouter le champ pour l'ID de l'utilisateur authentifié -->
+    <input type="hidden" name="user_id" value="{{ current_user.id }}" required>
+
+    <!-- Saisie de la salle et des horaires -->
+    <input type="number" name="room_id" placeholder="ID de la Salle" required>
+    <input type="datetime-local" name="start_time" required>
+    <input type="datetime-local" name="end_time" required>
+
+    <button type="submit">Réserver</button>
+</form>
+
+{% endblock %}
