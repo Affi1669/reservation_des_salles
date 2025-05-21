@@ -1,8 +1,10 @@
 import os
 
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
+
 class Config:
     SECRET_KEY = '1234'
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://Affi:123456@mysql-host.render.com:3306/reservation_db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASEDIR, 'instance', 'reservation.db')
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
