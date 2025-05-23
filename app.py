@@ -4,6 +4,7 @@ from models import db, User
 from routes import register_blueprints
 from flask_login import LoginManager, UserMixin
 from flask_mail import Mail
+import os
 
 def create_app():
     app = Flask(__name__)
@@ -37,4 +38,5 @@ with app.app_context():
     db.create_all()  # Crée les tables si elles n'existent pas
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, port=port, host="0.0.0.0")
