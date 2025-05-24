@@ -20,11 +20,11 @@
         {% else %}
             <a href="{{ url_for('main.index')}}">Acceuil</a>
             <a href="{{ url_for('auth.login') }}">Se connecter</a>
-            <a href="{{ url_for('user.users_page') }}">Gestion des utilisateurs</a>
         {% endif %}
         {% if current_user.is_authenticated and current_user.role == "admin" %}
             <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
             <a href="{{ url_for('room.rooms_page') }}">Salles</a>
+            <a href="{{ url_for('user.users_page') }}">Gestion des utilisateurs</a>
         {% endif %}
 
         {% if current_user.is_authenticated %}
